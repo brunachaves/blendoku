@@ -18,6 +18,9 @@ body {
     margin: 30px
 }
 
+.draggable-items {
+    display: flex;
+}
 
 .color-box {
     border: 1px black dotted;
@@ -26,7 +29,6 @@ body {
     display: inline-flex;
     margin: 10px;
 }
-
 
 .hide {
     visibility: hidden;
