@@ -19,6 +19,7 @@ body {
     margin: 30px
 }
 
+
 .draggable-items div{
     margin: 10px;
     border: 2px black;
@@ -28,6 +29,7 @@ body {
 .draggable-items {
     border: 2px black solid;
     height: 100px;
+    display: flex;
 }
 
 .color-box {
@@ -37,7 +39,6 @@ body {
     border-radius: 20%;
     margin: auto;
 }
-
 
 .hide {
     visibility: hidden;
