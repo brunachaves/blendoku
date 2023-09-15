@@ -3,6 +3,7 @@ function allowDrop(ev) {
 }
 
 function drag(ev) {
+    event.target.parentElement.ondrop = drop;
     ev.dataTransfer.setData('Text', ev.target.id);
 }
 
@@ -10,6 +11,10 @@ function drop(ev) {
     let data = ev.dataTransfer.getData('Text');
     ev.target.appendChild(document.getElementById(data));
     ev.preventDefault();
+}
+
+function handleDragEnd(event) {
+    event.target.parentElement.ondrop = null;
 }
 
 function createSeedColor() {
