@@ -1,5 +1,7 @@
 function allowDrop(ev) {
-    ev.preventDefault();
+    if (ev.toElement.className != 'color-box') {
+        ev.preventDefault();
+    }
 }
 
 function drag(ev) {
@@ -11,6 +13,13 @@ function drop(ev) {
     let data = ev.dataTransfer.getData('Text');
     ev.target.appendChild(document.getElementById(data));
     ev.preventDefault();
+
+    if (checkGameIsFinished()) {
+        alert('Good job you finished the game!');
+        // This will generate a warning complaing about the event handler taking too long
+        // TODO: change this alert to another way of showing success
+        initializeGame();
+    }
 }
 
 function handleDragEnd(event) {
@@ -18,26 +27,21 @@ function handleDragEnd(event) {
 }
 
 function createRandomColor() {
-    let randomColor = [];
-    for (var i = 0; i < 3; i++) {
-        randomColor[i] = Math.floor(Math.random() * 255);
-    }
-    return randomColor;
+    return [255, 255, 255].map((number) => Math.floor(Math.random() * number));
 }
 
-function createInterval(startColor, endColor) {
+function createInterval(startColor, endColor, level) {
     let interval = [];
-    for (let i = 0; i < 3; i++) {
-        interval[i] = (parseInt(endColor[i]) - parseInt(startColor[i])) / 4;
+    for (let i = 0; i < level - 2; i++) {
+        interval[i] = (parseInt(endColor[i]) - parseInt(startColor[i])) / level;
     }
     return interval;
 }
 
-function createColorArray(startColor, interval) {
+function createColorArray(startColor, interval, level) {
     var colorArray = [startColor.join(',')];
-    console.log(startColor);
 
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < level - 1; i++) {
         var newColor = [];
         newColor[0] = Math.floor(startColor[0] + interval[0]);
         newColor[1] = Math.floor(startColor[1] + interval[1]);
@@ -49,21 +53,92 @@ function createColorArray(startColor, interval) {
 }
 
 function shuffle(array) {
-    return array.sort(() => Math.random() - 0.5);
+    return array.sort(() => Math.random() - Math.random());
 }
 
-var firstColor = createRandomColor();
+function setBackgroundAndRemoveDropEvent(box, index, colorArray) {
+    box.style.backgroundColor = `rgb(${colorArray[index]})`;
+}
 
-var lastColor = createRandomColor();
+function addColorBoxes(level) {
+    let draggableItems = document.getElementsByClassName('draggable-items')[0];
+    draggableItems.innerHTML = '';
+    for (let i = 0; i < level; i++) {
+        let div = document.createElement('div');
+        div.id = `color-${i}`;
+        div.className = 'color-box';
+        div.draggable = true;
+        div.ondragstart = drag;
+        div.ondragend = handleDragEnd;
+        draggableItems.appendChild(div);
+    }
+}
 
-var interval = createInterval(firstColor, lastColor);
+function addGridBoxes(level) {
+    let dropTargets = document.getElementsByClassName('drop-targets')[0];
+    dropTargets.innerHTML = '';
+    for (let i = 0; i < level; i++) {
+        let div = document.createElement('div');
+        div.className = 'box';
+        div.ondrop = drop;
+        div.ondragover = allowDrop;
+        dropTargets.appendChild(div);
+    }
+}
 
-var colorArray = createColorArray(firstColor, interval);
+function initializeBoxes(level) {
+    addColorBoxes(level);
+    addGridBoxes(level);
+}
 
-let colorBoxes = Array.from(document.querySelectorAll('.color-box'));
+function generateColorArrayFromGame() {
+    let colorGrid = document.getElementsByClassName('drop-targets')[0];
+    let colors = Array.from(colorGrid.getElementsByClassName('color-box'));
+    let colorsArray = colors.map((box) =>
+        box.style.backgroundColor
+            .split('(')[1]
+            .split(')')[0]
+            .replaceAll(' ', '')
+    );
+    return colorsArray;
+}
 
-colorBoxes = shuffle(colorBoxes);
+function checkGameIsFinished() {
+    let gameResult = JSON.stringify(generateColorArrayFromGame());
+    let gameResultReverse = JSON.stringify(
+        generateColorArrayFromGame().reverse()
+    );
+    let colorArrayStr = JSON.stringify(window.colorArray);
 
-colorBoxes.forEach(
-    (box, index) => (box.style.backgroundColor = `rgb(${colorArray[index]})`)
-)
+    return gameResult == colorArrayStr || gameResultReverse == colorArrayStr;
+}
+
+function initializeGame() {
+    var level = 5;
+    initializeBoxes(level);
+
+    window.firstColor = createRandomColor();
+    window.lastColor = createRandomColor();
+
+    window.interval = createInterval(
+        window.firstColor,
+        window.lastColor,
+        level
+    );
+
+    window.colorArray = createColorArray(
+        window.firstColor,
+        window.interval,
+        level
+    );
+
+    window.colorBoxes = Array.from(document.querySelectorAll('.color-box'));
+
+    colorBoxes = shuffle(colorBoxes);
+
+    colorBoxes.forEach((box, index) =>
+        setBackgroundAndRemoveDropEvent(box, index, colorArray)
+    );
+}
+
+initializeGame();
