@@ -16,16 +16,15 @@ body {
 .drop-targets {
     display: flexbox;
     display: inline-flex;
-    margin: 30px
+    margin: 30px;
 }
 
 
 .draggable-items div{
-    margin: 10px;
+    margin: auto;
     border: 2px black;
     border-radius: 20%;
 }
-
 .draggable-items {
     border: 2px black solid;
     height: 100px;
