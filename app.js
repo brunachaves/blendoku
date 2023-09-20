@@ -1,5 +1,7 @@
 function allowDrop(ev) {
-    ev.preventDefault();
+    if (ev.toElement.className != 'color-box') {
+        ev.preventDefault();
+    }
 }
 
 function drag(ev) {
@@ -18,11 +20,7 @@ function handleDragEnd(event) {
 }
 
 function createRandomColor() {
-    let randomColor = [];
-    for (var i = 0; i < 3; i++) {
-        randomColor[i] = Math.floor(Math.random() * 255);
-    }
-    return randomColor;
+    return [255, 255, 255].map((number) => Math.floor(Math.random() * 255));
 }
 
 function createInterval(startColor, endColor) {
@@ -52,6 +50,10 @@ function shuffle(array) {
     return array.sort(() => Math.random() - 0.5);
 }
 
+function setBackgroundAndRemoveDropEvent(box, index) {
+    box.style.backgroundColor = `rgb(${colorArray[index]})`;
+}
+
 var firstColor = createRandomColor();
 
 var lastColor = createRandomColor();
@@ -64,6 +66,4 @@ let colorBoxes = Array.from(document.querySelectorAll('.color-box'));
 
 colorBoxes = shuffle(colorBoxes);
 
-colorBoxes.forEach(
-    (box, index) => (box.style.backgroundColor = `rgb(${colorArray[index]})`)
-)
+colorBoxes.forEach((box, index) => setBackgroundAndRemoveDropEvent(box, index));
