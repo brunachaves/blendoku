@@ -1,29 +1,33 @@
-function allowDrop(ev) {
-    if (ev.toElement.className != 'color-box') {
-        ev.preventDefault();
+function allowDrop(event) {
+    if (event.toElement.className != 'color-box') {
+        event.preventDefault();
     }
 }
 
-function drag(ev) {
-    ev.target.parentElement.ondrop = drop;
-    ev.dataTransfer.setData('Text', ev.target.id);
+function drag(event) {
+    event.target.parentElement.ondrop = drop;
+    event.dataTransfer.setData('Text', event.target.id);
 }
 
-function drop(ev) {
-    let data = ev.dataTransfer.getData('Text');
-    ev.target.appendChild(document.getElementById(data));
-    ev.preventDefault();
+function drop(event) {
+    let data = event.dataTransfer.getData('Text');
+    event.target.appendChild(document.getElementById(data));
+    event.preventDefault();
 
     if (checkGameIsFinished()) {
-        alert('Good job you finished the game!');
-        // This will generate a warning complaing about the event handler taking too long
-        // TODO: change this alert to another way of showing success
+        const dialog = document.querySelector('dialog');
+        dialog.showModal();
         initializeGame();
     }
 }
 
 function handleDragEnd(event) {
     event.target.parentElement.ondrop = null;
+}
+
+function closeModal(event) {
+    const dialog = document.querySelector('dialog');
+    dialog.close();
 }
 
 function createRandomColor() {
