@@ -1,5 +1,5 @@
-
 body {
+    margin-top: 200px;
     margin: auto;
     padding: auto;
     width: max-content;
@@ -19,8 +19,7 @@ body {
     margin: 30px;
 }
 
-
-.draggable-items div{
+.draggable-items div {
     margin: auto;
     border: 2px black;
     border-radius: 20%;
@@ -41,4 +40,21 @@ body {
 
 .hide {
     visibility: hidden;
+}
+
+.dialog {
+    align-items: center;
+    margin: auto;
+    padding: auto;
+}
+
+::backdrop {
+    background-image: linear-gradient(
+        45deg,
+        magenta,
+        rebeccapurple,
+        dodgerblue,
+        green
+    );
+    opacity: 0.75;
 }
